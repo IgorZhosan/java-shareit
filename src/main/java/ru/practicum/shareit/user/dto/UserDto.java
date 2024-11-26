@@ -8,8 +8,10 @@ import lombok.Data;
 @Data
 public class UserDto {
     private Long id;
+
     @NotBlank(message = "Имя пользователя должно быть указано")
     private String name;
+
     @NotNull
     @Email(message = "Имейл должен содержать символ «@». Формат имейла: example@mail.com")
     private String email;

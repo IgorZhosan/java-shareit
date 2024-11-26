@@ -11,7 +11,7 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Имя пользователя должно быть указано")
-        private String name;
+    private String name;
 
     @NotNull(message = "Имейл должен быть указан")
     @Email(message = "Имейл должен содержать символ «@». Формат имейла: example@mail.com")

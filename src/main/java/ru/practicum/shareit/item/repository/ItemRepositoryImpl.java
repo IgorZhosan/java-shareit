@@ -42,10 +42,11 @@ public class ItemRepositoryImpl implements ItemRepository {
         if (items.isEmpty()) {
             return new ArrayList<>();
         }
+        String searchText = text.toLowerCase();
         return items.values().stream()
                 .filter(Item::getAvailable)
-                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                .filter(item -> item.getName().toLowerCase().contains(searchText)
+                        || item.getDescription().toLowerCase().contains(searchText))
                 .toList();
     }
 

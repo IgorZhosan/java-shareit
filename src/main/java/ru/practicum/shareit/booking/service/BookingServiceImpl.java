@@ -41,7 +41,7 @@ public class BookingServiceImpl implements BookingService {
     private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
 
     @Override
-    public BookingDtoOutput createBooking(final Long userId, BookingDtoInput bookingDtoInput) {
+    public BookingDtoOutput createBooking(Long userId, BookingDtoInput bookingDtoInput) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = {} не существует." + userId));
         final Item item = itemRepository.findById(bookingDtoInput.getItemId())
@@ -61,26 +61,24 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public BookingDtoOutput confirmationBooking(final Long userId, final Long bookingId, final Boolean approved) {
-        final Booking booking = bookingRepository.findByIdAndOwnerId(bookingId, userId)
+    public BookingDtoOutput confirmationBooking(Long userId, Long bookingId, Boolean approved) {
+        Booking booking = bookingRepository.findByIdAndOwnerId(bookingId, userId)
                 .orElseThrow(() -> new ValidationException("Запроса на бронирование не существует или вы не являетесь владельцем."));
 
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
-            throw new ValidationException("Вещь не ожиданиет бронирования.");
+            throw new ValidationException("Вещь не ожидает бронирования.");
         }
 
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        final Booking updateBooking = bookingRepository.save(booking);
 
         log.info("Запрос на подтверждение бронирования вещи с id = {} выполнен.", bookingId);
-        return bookingMapper.toBookingDtoOutput(updateBooking,
+        return bookingMapper.toBookingDtoOutput(booking,
                 userMapper.toUserDto(booking.getBooker()), itemMapper.toItemDto(booking.getItem()));
     }
 
-
     @Override
     @Transactional(readOnly = true)
-    public BookingDtoOutput getBookingById(final Long userId, final Long bookingId) {
+    public BookingDtoOutput getBookingById(Long userId, Long bookingId) {
         final Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Запроса на бронирование не существует."));
 
@@ -133,7 +131,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<BookingDtoOutput> getAllBookingsFromOwner(final Long userId, final State state) {
+    public Collection<BookingDtoOutput> getAllBookingsFromOwner(Long userId, State state) {
         checkUserId(userId);
         final LocalDateTime time = LocalDateTime.now();
         final List<Booking> bookings;
@@ -172,7 +170,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
     }
 
-    private void checkUserId(final Long userId) {
+    private void checkUserId(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id: " + userId + " не найден."));
     }

@@ -42,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getAllItems(final long userId) {
+    public List<ItemDto> getAllItems(long userId) {
         checkUserId(userId);
         List<Item> items = itemRepository.findAllByOwnerId(userId);
         log.info("Получение списка всех вещей пользователя.");
@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public ItemDtoOutput getItemById(final long userId, final long itemId) {
+    public ItemDtoOutput getItemById(long userId, long itemId) {
         final Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id: " + itemId + " не найдена."));
 
@@ -75,7 +75,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto itemCreate(final long userId, final ItemDto itemDto) {
+    public ItemDto itemCreate(long userId, ItemDto itemDto) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = {} нет." + userId));
         final Item item = itemMapper.toItem(user, itemDto);
@@ -85,7 +85,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto itemUpdate(final long userId, final long itemId, final ItemDto itemDto) {
+    public ItemDto itemUpdate(long userId, long itemId, ItemDto itemDto) {
         checkUserId(userId);
 
         Item item = itemRepository.findById(itemId)
@@ -112,8 +112,9 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toItemDto(itemRepository.save(item));
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<ItemDto> itemSearch(final String text) {
+    public List<ItemDto> itemSearch(String text) {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
@@ -123,7 +124,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void itemDelete(final Long itemId) {
+    public void itemDelete(Long itemId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id: " + itemId + " не найдена."));
 
@@ -150,7 +151,7 @@ public class ItemServiceImpl implements ItemService {
         return commentMapper.toCommentDto(comment);
     }
 
-    private void checkUserId(final Long userId) {
+    private void checkUserId(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             log.warn("Пользователя с id = {} не существует.", userId);
             throw new NotFoundException("Пользователя с id = {} не существует." + userId);

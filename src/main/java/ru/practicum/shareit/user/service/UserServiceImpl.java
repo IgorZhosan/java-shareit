@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getUserById(final long userId) {
+    public UserDto getUserById(long userId) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id: " + userId + " не найден."));
 
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto userCreate(final UserDto userDto) {
+    public UserDto userCreate(UserDto userDto) {
         if (userRepository.findAll().contains(userMapper.toUser(userDto))) {
             log.warn("Пользователь с id {} уже добавлен в список.", userDto.getId());
             throw new DuplicatedDataException("Этот пользователь уже существует.");
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto userUpdate(final long userId, final UserDto userDto) {
+    public UserDto userUpdate(long userId, UserDto userDto) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = {} не существует." + userId));
 
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void userDelete(final Long userId) {
+    public void userDelete(Long userId) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = {} не существует." + userId));
 

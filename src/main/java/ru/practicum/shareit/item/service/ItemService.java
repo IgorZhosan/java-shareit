@@ -7,17 +7,17 @@ import ru.practicum.shareit.item.dto.ItemDtoOutput;
 import java.util.List;
 
 public interface ItemService {
-    List<ItemDto> getAllItems(final long userId);
+    List<ItemDto> getAllItems(long userId);
 
-    ItemDtoOutput getItemById(final long userId, final long itemId);
+    ItemDtoOutput getItemById(long userId, long itemId);
 
-    ItemDto itemCreate(final long userId, final ItemDto itemDto);
+    ItemDto itemCreate(long userId, ItemDto itemDto);
 
-    ItemDto itemUpdate(final long userId, final long itemId, final ItemDto itemDto);
+    ItemDto itemUpdate(long userId, long itemId, ItemDto itemDto);
 
-    List<ItemDto> itemSearch(final String text);
+    List<ItemDto> itemSearch(String text);
 
-    void itemDelete(final Long itemId);
+    void itemDelete(Long itemId);
 
-    CommentDto addComments(final long userId, final long itemId, final CommentDto commentDto);
+    CommentDto addComments(long userId, long itemId, CommentDto commentDto);
 }

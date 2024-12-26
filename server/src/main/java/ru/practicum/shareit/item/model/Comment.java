@@ -1,14 +1,7 @@
 package ru.practicum.shareit.item.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import ru.practicum.shareit.user.model.User;
 
@@ -21,14 +14,22 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "text", nullable = false)
+
+    @NotNull(message = "Text cannot be null")
+    @Column(name = "text")
     private String text;
+
+    @NotNull(message = "Item cannot be null")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id")
     private Item item;
+
+    @NotNull(message = "Author cannot be null")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id")
     private User author;
-    @Column(name = "created", nullable = false)
+
+    @NotNull(message = "Created date cannot be null")
+    @Column(name = "created")
     private LocalDateTime created;
 }

@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDtoInput;
 import ru.practicum.shareit.booking.dto.BookingDtoOutput;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -43,12 +43,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDtoOutput createBooking(Long userId, BookingDtoInput bookingDtoInput) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователя с id = {} не существует." + userId));
+                .orElseThrow(() -> new NotFoundException("Пользователя с id = " + userId + " не существует."));
         Item item = itemRepository.findById(bookingDtoInput.getItemId())
-                .orElseThrow(() -> new NotFoundException("Вещи с id = {} нет." + bookingDtoInput.getItemId()));
+                .orElseThrow(() -> new NotFoundException("Вещи с id = " + bookingDtoInput.getItemId() + " нет."));
 
         if (!item.getAvailable()) {
-            throw new ValidationException("Вещь не доступена для бронирования.");
+            throw new ValidationException("Вещь недоступна для бронирования.");
         }
 
         Booking booking = bookingMapper.toBooking(bookingDtoInput, user, item);
@@ -59,24 +59,21 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.toBookingDtoOutput(booking, userMapper.toUserDto(user), itemMapper.toItemDto(item));
     }
 
-
     @Override
     public BookingDtoOutput confirmationBooking(Long userId, Long bookingId, Boolean approved) {
         Booking booking = bookingRepository.findByIdAndOwnerId(bookingId, userId)
                 .orElseThrow(() -> new ValidationException("Запроса на бронирование не существует или вы не являетесь владельцем."));
 
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
-            throw new ValidationException("Вещь не ожиданиет бронирования.");
+            throw new ValidationException("Вещь не ожидает бронирования.");
         }
 
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        Booking updateBooking = bookingRepository.save(booking);
 
         log.info("Запрос на подтверждение бронирования вещи с id = {} выполнен.", bookingId);
-        return bookingMapper.toBookingDtoOutput(updateBooking,
+        return bookingMapper.toBookingDtoOutput(booking,
                 userMapper.toUserDto(booking.getBooker()), itemMapper.toItemDto(booking.getItem()));
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -86,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
 
         if (!Objects.equals(booking.getItem().getOwner().getId(), userId)
                 && !Objects.equals(booking.getBooker().getId(), userId)) {
-            throw new ValidationException("Ошибка доступа к бронированию у пользователя. ");
+            throw new ValidationException("Ошибка доступа к бронированию у пользователя.");
         }
 
         log.info("Запрос на получение забронированной вещи с id = {} выполнен.", bookingId);
@@ -124,7 +121,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new ValidationException("Неверный параметр запроса state.");
         }
 
-        log.info("Запрос на получение всех бронированний пользователя с id = {} выполнен.", userId);
+        log.info("Запрос на получение всех бронирований пользователя с id = {} выполнен.", userId);
         return bookings.stream()
                 .map(booking -> bookingMapper.toBookingDtoOutput(booking,
                         userMapper.toUserDto(booking.getBooker()), itemMapper.toItemDto(booking.getItem())))

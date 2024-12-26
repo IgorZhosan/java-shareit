@@ -63,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
 
         ItemDtoOutput itemDtoOutput = itemMapper.toItemDtoOutput(item, commentsDto);
 
-        if ((Objects.equals(item.getOwner().getId(), userId))) {
+        if (Objects.equals(item.getOwner().getId(), userId)) {
             Optional<Booking> last = bookingRepository.findTopByItemIdAndEndBeforeAndStatusInOrderByEndDesc(itemId,
                     LocalDateTime.now(), List.of(BookingStatus.APPROVED));
             itemDtoOutput.setLastBooking(last.map(Booking::getEnd).orElse(null));
@@ -80,8 +80,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto itemCreate(long userId, ItemDto itemDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователя с id = {} нет." + userId));
-        Item item = itemRepository.save(itemMapper.toItem(user, itemDto));
+                .orElseThrow(() -> new NotFoundException("Пользователя с id = " + userId + " нет."));
+        Item item = itemMapper.toItem(user, itemDto);
 
         if (itemDto.getRequestId() != null) {
             ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
@@ -89,6 +89,7 @@ public class ItemServiceImpl implements ItemService {
             item.setRequest(itemRequest);
         }
 
+        itemRepository.save(item);
         log.info("Вещь с id {} добавлена.", item.getId());
         return itemMapper.toItemDto(item);
     }
@@ -117,7 +118,6 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(itemDto.getAvailable());
         }
 
-        itemRepository.save(item);
         log.info("Вещь с id {} обновлена.", item.getId());
         return itemMapper.toItemDto(item);
     }
@@ -145,7 +145,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto addComments(long userId, long itemId, CommentDto commentDto) {
         User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователя с id = {} не существует." + userId));
+                .orElseThrow(() -> new NotFoundException("Пользователя с id = " + userId + " не существует."));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с id: " + itemId + " не найдена."));
 
@@ -164,7 +164,7 @@ public class ItemServiceImpl implements ItemService {
     private void checkUserId(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             log.warn("Пользователя с id = {} не существует.", userId);
-            throw new NotFoundException("Пользователя с id = {} не существует." + userId);
+            throw new NotFoundException("Пользователя с id = " + userId + " не существует.");
         }
     }
 }

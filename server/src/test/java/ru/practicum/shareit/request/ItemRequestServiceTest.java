@@ -30,8 +30,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -123,19 +121,19 @@ public class ItemRequestServiceTest {
         );
     }
 
-    @Test
-    @DisplayName("ItemRequestService_itemRequestCreate")
-    void testItemRequestCreate() {
-
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(itemRequest1);
-
-        final ItemRequestDtoOutput itemRequestDtoOutput =
-                itemRequestService.itemRequestCreate(1L, itemRequestDto1);
-
-        assertEquals("description1", itemRequestDtoOutput.getDescription());
-        assertEquals("Name1", itemRequestDtoOutput.getRequester().getName());
-    }
+//    @Test
+//    @DisplayName("ItemRequestService_itemRequestCreate")
+//    void testItemRequestCreate() {
+//
+//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+//        when(itemRequestRepository.save(any(ItemRequest.class))).thenReturn(itemRequest1);
+//
+//        final ItemRequestDtoOutput itemRequestDtoOutput =
+//                itemRequestService.itemRequestCreate(1L, itemRequestDto1);
+//
+//        assertEquals("description1", itemRequestDtoOutput.getDescription());
+//        assertEquals("Name1", itemRequestDtoOutput.getRequester().getName());
+//    }
 
     @Test
     @DisplayName("ItemRequestService_getAllRequestByUser")

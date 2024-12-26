@@ -235,7 +235,6 @@ public class BookingServiceTest {
     void testConfirmationTrue() {
 
         when(bookingRepository.findByIdAndOwnerId(1L, 1L)).thenReturn(Optional.of(booking));
-        when(bookingRepository.save(booking)).thenReturn(booking);
 
         final BookingDtoOutput bookingDtoOutput = bookingService.confirmationBooking(1L, 1L, true);
 
@@ -249,7 +248,6 @@ public class BookingServiceTest {
     void testConfirmationFalse() {
 
         when(bookingRepository.findByIdAndOwnerId(1L, 1L)).thenReturn(Optional.of(booking));
-        when(bookingRepository.save(booking)).thenReturn(booking);
 
         final BookingDtoOutput bookingDtoOutput = bookingService.confirmationBooking(1L, 1L, false);
 

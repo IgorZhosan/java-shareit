@@ -248,7 +248,6 @@ public class ItemServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item10));
-        when(itemRepository.save(item10)).thenReturn(item10);
 
         ItemDto updatedItemDto = itemService.itemUpdate(1L, 1L, itemDto1);
 
@@ -283,7 +282,6 @@ public class ItemServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item10));
-        when(itemRepository.save(item10)).thenReturn(item10);
 
         ItemDto updatedItemDto = itemService.itemUpdate(1L, 1L, itemDto1);
 
@@ -300,7 +298,6 @@ public class ItemServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item10));
-        when(itemRepository.save(item10)).thenReturn(item10);
 
         ItemDto updatedItemDto = itemService.itemUpdate(1L, 1L, itemDto1);
 
@@ -316,7 +313,6 @@ public class ItemServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item10));
-        when(itemRepository.save(item10)).thenReturn(item10);
 
         ItemDto updatedItemDto = itemService.itemUpdate(1L, 1L, itemDto1);
 
@@ -333,7 +329,6 @@ public class ItemServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item10));
-        when(itemRepository.save(item10)).thenReturn(item10);
 
         ItemDto updatedItemDto = itemService.itemUpdate(1L, 1L, itemDto1);
 
@@ -349,7 +344,6 @@ public class ItemServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item10));
-        when(itemRepository.save(item10)).thenReturn(item10);
 
         ItemDto updatedItemDto = itemService.itemUpdate(1L, 1L, itemDto1);
 
@@ -366,7 +360,6 @@ public class ItemServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item10));
-        when(itemRepository.save(item10)).thenReturn(item10);
 
         ItemDto updatedItemDto = itemService.itemUpdate(1L, 1L, itemDto1);
 
@@ -635,7 +628,6 @@ public class ItemServiceTest {
         itemDto2.setRequestId(1L);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
-        when(itemRepository.save(itemMapper.toItem(user1, itemDto2))).thenReturn(item2);
 
         assertThrows(
                 NotFoundException.class,

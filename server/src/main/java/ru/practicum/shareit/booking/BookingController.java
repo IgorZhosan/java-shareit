@@ -1,8 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,13 +21,14 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.Collection;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Validated
 public class BookingController {
 
-    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
+    public static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     private final BookingService bookingService;
 
@@ -35,6 +36,7 @@ public class BookingController {
     @ResponseStatus(HttpStatus.CREATED)
     public BookingDtoOutput createBooking(@RequestHeader(HEADER_USER_ID) Long userId,
                                           @RequestBody BookingDtoInput bookingDtoInput) {
+        log.info("Создание бронирования пользователем с ID: {}", userId);
         return bookingService.createBooking(userId, bookingDtoInput);
     }
 
@@ -42,24 +44,28 @@ public class BookingController {
     public BookingDtoOutput confirmationBooking(@RequestHeader(HEADER_USER_ID) Long userId,
                                                 @PathVariable Long bookingId,
                                                 @RequestParam Boolean approved) {
+        log.info("Подтверждение бронирования с ID: {} пользователем с ID: {}, статус подтверждения: {}", bookingId, userId, approved);
         return bookingService.confirmationBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDtoOutput getBookingById(@RequestHeader(HEADER_USER_ID) Long userId,
                                            @PathVariable Long bookingId) {
+        log.info("Получение информации о бронировании с ID: {} пользователем с ID: {}", bookingId, userId);
         return bookingService.getBookingById(userId, bookingId);
     }
 
     @GetMapping
     public Collection<BookingDtoOutput> getAllBookingsFromUser(@RequestHeader(HEADER_USER_ID) Long userId,
                                                                @RequestParam(defaultValue = "ALL") State state) {
+        log.info("Получение всех бронирований пользователя с ID: {}, с состоянием: {}", userId, state);
         return bookingService.getAllBookingsFromUser(userId, state);
     }
 
     @GetMapping("/owner")
     public Collection<BookingDtoOutput> getAllBookingsFromOwner(@RequestHeader(HEADER_USER_ID) Long userId,
                                                                 @RequestParam(defaultValue = "ALL") State state) {
+        log.info("Получение всех бронирований владельца с ID: {}, с состоянием: {}", userId, state);
         return bookingService.getAllBookingsFromOwner(userId, state);
     }
 }

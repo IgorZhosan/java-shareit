@@ -39,8 +39,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDtoOutput itemRequestCreate(long userId, ItemRequestDto itemRequestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id: " + userId + " не найден."));
-        ItemRequest itemRequest = itemRequestRepository.save(itemRequestMapper.toItemRequest(itemRequestDto,
-                user));
+        ItemRequest itemRequest = itemRequestMapper.toItemRequest(itemRequestDto, user);
+        itemRequestRepository.save(itemRequest);
 
         log.info("Запрос с id {} создан.", itemRequest.getId());
         ItemRequestDtoOutput itemRequestDtoOutput = itemRequestMapper.toItemRequestDtoOutput(itemRequest);
@@ -76,24 +76,25 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Transactional(readOnly = true)
     public List<ItemRequestDtoOutput> getAllRequests(long userId) {
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdNot(userId, SORT);
-        List<ItemRequestDtoOutput> responselist = new ArrayList<>();
+        List<ItemRequestDtoOutput> responseList = new ArrayList<>();
 
         for (ItemRequest itemRequest : itemRequests) {
             ItemRequestDtoOutput itemRequestDtoOutput = itemRequestMapper.toItemRequestDtoOutput(itemRequest);
             itemRequestDtoOutput.setRequester(userMapper.toUserDto(itemRequest.getRequester()));
-            responselist.add(itemRequestDtoOutput);
+            responseList.add(itemRequestDtoOutput);
         }
 
         log.info("Получение всех запросов, созданных другими пользователями, кроме запросов пользователя с id = {}.", userId);
-        return responselist;
+        return responseList;
     }
 
     @Override
     @Transactional(readOnly = true)
     public ItemRequestDtoOutput getRequestById(long requestId) {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Запрос с id = {} не найден." + requestId));
+                .orElseThrow(() -> new NotFoundException("Запрос с id: " + requestId + " не найден."));
         ItemRequestDtoOutput itemRequestDtoOutput = itemRequestMapper.toItemRequestDtoOutput(itemRequest);
+
         List<ItemDtoResponseRequest> items = itemRepository.findAllByRequest(itemRequest)
                 .stream()
                 .map(itemMapper::toItemDtoResponseRequest)
